@@ -1,6 +1,7 @@
 package checkout
 
 import (
+	"errors"
 	"reflect"
 	"testing"
 
@@ -119,6 +120,15 @@ func TestHandler_createPrices(t *testing.T) {
 				unmarshalCalls: 1,
 			},
 			wantErr: false,
+		}, {
+			name: "When given an invalid priceList.json, an error is returned from the ReadFile function",
+			i: &Handler{
+				ReadFile: func(s string) ([]byte, error) {
+					return []byte{}, errors.New("expected error in ReadFile")
+				}, Unmarshal: func(b []byte, a any) error { return nil },
+			},
+			want:    []SKU{},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
