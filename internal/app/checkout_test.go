@@ -226,6 +226,16 @@ func TestHandler_Checkout(t *testing.T) {
 			calls: calls{
 				scanCalls: 1,
 			},
+		}, {
+			name: "Given an eror from createPrices, programme returns error correctly",
+			i: &Handler{Scanln: func(a ...any) (int, error) { return 0, nil },
+				ReadFile:  func(s string) ([]byte, error) { return []byte{}, nil },
+				Unmarshal: func(b []byte, a any) error { return errors.New("expected error in unmarshal") },
+			},
+			calls: calls{
+				scanCalls: 1,
+			},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
