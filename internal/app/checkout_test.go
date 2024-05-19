@@ -159,6 +159,25 @@ func TestHandler_createPrices(t *testing.T) {
 				},
 			},
 			wantErr: false,
+		}, {
+			name: "Given an error from JSON unmarshaller, error is handled correctly",
+			i: &Handler{ReadFile: func(s string) ([]byte, error) {
+				return []byte(`
+				[{
+					"identifier": "A",
+					"unitPrice": 50,
+					"specialPriceQuantity": 3,
+					"specialPrice": 130
+				}]`), nil
+			},
+				Unmarshal: func(b []byte, a any) error { return errors.New("expected error in unmarshal") },
+			},
+			calls: calls{
+				readFileCalls:  1,
+				unmarshalCalls: 1,
+			},
+			want:    []SKU{},
+			wantErr: true,
 		},
 	}
 	for _, tt := range tests {
