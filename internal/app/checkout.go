@@ -21,6 +21,6 @@ func (i *Handler) createPrices() ([]SKU, error) {
 	panic("NYI")
 }
 
-func (i *Handler) calculateTotal(skuPriceList []SKU, itemList string) int {
+func calculateTotal(skuPriceList []SKU, itemList string) int {
 	panic("NYI")
 }
