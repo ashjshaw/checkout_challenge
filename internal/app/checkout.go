@@ -1,6 +1,7 @@
 package checkout
 
 import (
+	"fmt"
 	"strings"
 )
 
@@ -23,7 +24,10 @@ func (i *Handler) Checkout() error {
 
 func (i *Handler) createPrices() ([]SKU, error) {
 	skuPriceList := []SKU{}
-	pricesJson, _ := i.ReadFile("../priceList.json")
+	pricesJson, err := i.ReadFile("../priceList.json")
+	if err != nil {
+		return []SKU{}, fmt.Errorf("error occured reading priceList.json: %w", err)
+	}
 	_ = i.Unmarshal(pricesJson, &skuPriceList)
 	return skuPriceList, nil
 }

@@ -127,7 +127,11 @@ func TestHandler_createPrices(t *testing.T) {
 					return []byte{}, errors.New("expected error in ReadFile")
 				}, Unmarshal: func(b []byte, a any) error { return nil },
 			},
-			want:    []SKU{},
+			want: []SKU{},
+			calls: calls{
+				readFileCalls:  1,
+				unmarshalCalls: 0,
+			},
 			wantErr: true,
 		},
 	}
