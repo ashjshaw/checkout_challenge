@@ -28,12 +28,11 @@ func calculateTotal(skuPriceList []SKU, itemList string) int {
 	for _, sku := range skuPriceList {
 		skuQuantity := strings.Count(itemList, sku.Identifier)
 		if sku.SpecialPriceQuantity > 0 {
-			remainder := skuQuantity % sku.SpecialPriceQuantity
+
 			totalPrice += (skuQuantity / sku.SpecialPriceQuantity) * sku.SpecialPrice
-			totalPrice += remainder * sku.UnitPrice
-		} else {
-			totalPrice += skuQuantity * sku.UnitPrice
+			skuQuantity = skuQuantity % sku.SpecialPriceQuantity
 		}
+		totalPrice += skuQuantity * sku.UnitPrice
 	}
 	return totalPrice
 }
