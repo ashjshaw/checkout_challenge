@@ -1,0 +1,26 @@
+[
+    {
+        "identifier":"A",
+        "unitPrice": 50,
+        "specialPriceQuantity": 3,
+        "specialPrice": 130
+    },
+    {
+        "identifier": "B",
+        "unitPrice": 30,
+        "specialPriceQuantity":2,
+        "specialPrice": 45
+    },
+    {
+        "identifier":"C",
+        "unitPrice": 20,
+        "specialPriceQuantity": 0,
+        "specialPrice": 0
+    },
+    {
+        "identifier":"D",
+        "unitPrice": 15,
+        "specialPriceQuantity": 0,
+        "specialPrice": 0
+    }
+]
