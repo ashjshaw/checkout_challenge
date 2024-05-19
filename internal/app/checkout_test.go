@@ -205,3 +205,40 @@ func TestHandler_createPrices(t *testing.T) {
 		})
 	}
 }
+
+func TestHandler_Checkout(t *testing.T) {
+	type calls struct {
+		scanCalls int
+	}
+	tests := []struct {
+		name    string
+		i       *Handler
+		calls   calls
+		wantErr bool
+	}{
+		{
+			name: "Given no error from createPrices, programme executes without issue",
+			i: &Handler{Scanln: func(a ...any) (int, error) { return 0, nil },
+				ReadFile:  func(s string) ([]byte, error) { return []byte{}, nil },
+				Unmarshal: func(b []byte, a any) error { return nil },
+			},
+			calls:   calls{scanCalls: 1},
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		calls := calls{}
+		i := &Handler{
+			Scanln: func(a ...any) (int, error) {
+				calls.scanCalls++
+				return tt.i.Scanln(a)
+			},
+		}
+		t.Run(tt.name, func(t *testing.T) {
+			assert.Equal(t, tt.calls, calls)
+			if err := i.Checkout(); (err != nil) != tt.wantErr {
+				t.Errorf("Handler.Checkout() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
