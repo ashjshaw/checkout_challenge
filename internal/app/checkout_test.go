@@ -32,6 +32,26 @@ func Test_calculateTotal(t *testing.T) {
 				itemList: "DDDDDCCC",
 			},
 			want: 135,
+		}, {
+			name: "Given item list with special prices, total price calculates correctly",
+			args: args{
+				skuPriceList: []SKU{
+					{
+						Identifier:           "A",
+						UnitPrice:            50,
+						SpecialPriceQuantity: 3,
+						SpecialPrice:         130,
+					},
+					{
+						Identifier:           "C",
+						UnitPrice:            20,
+						SpecialPriceQuantity: 0,
+						SpecialPrice:         0,
+					},
+				},
+				itemList: "AAAAACCC",
+			},
+			want: 290,
 		},
 	}
 	for _, tt := range tests {
