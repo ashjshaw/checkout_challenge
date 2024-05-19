@@ -28,7 +28,10 @@ func (i *Handler) createPrices() ([]SKU, error) {
 	if err != nil {
 		return []SKU{}, fmt.Errorf("error occured reading priceList.json: %w", err)
 	}
-	_ = i.Unmarshal(pricesJson, &skuPriceList)
+	err = i.Unmarshal(pricesJson, &skuPriceList)
+	if err != nil {
+		return skuPriceList, fmt.Errorf("error occured unmarshalling json: %w", err)
+	}
 	return skuPriceList, nil
 }
 
