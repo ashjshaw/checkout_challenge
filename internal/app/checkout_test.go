@@ -52,6 +52,26 @@ func Test_calculateTotal(t *testing.T) {
 				itemList: "AAAAACCC",
 			},
 			want: 290,
+		}, {
+			name: "Input with invalid characters are disregarded",
+			args: args{
+				skuPriceList: []SKU{
+					{
+						Identifier:           "A",
+						UnitPrice:            50,
+						SpecialPriceQuantity: 3,
+						SpecialPrice:         130,
+					},
+					{
+						Identifier:           "C",
+						UnitPrice:            20,
+						SpecialPriceQuantity: 0,
+						SpecialPrice:         0,
+					},
+				},
+				itemList: "AAAAACCC42bob",
+			},
+			want: 290,
 		},
 	}
 	for _, tt := range tests {
