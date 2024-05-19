@@ -222,23 +222,27 @@ func TestHandler_Checkout(t *testing.T) {
 				ReadFile:  func(s string) ([]byte, error) { return []byte{}, nil },
 				Unmarshal: func(b []byte, a any) error { return nil },
 			},
-			calls:   calls{scanCalls: 1},
 			wantErr: false,
+			calls: calls{
+				scanCalls: 1,
+			},
 		},
 	}
 	for _, tt := range tests {
-		calls := calls{}
-		i := &Handler{
-			Scanln: func(a ...any) (int, error) {
-				calls.scanCalls++
-				return tt.i.Scanln(a)
-			},
-		}
 		t.Run(tt.name, func(t *testing.T) {
-			assert.Equal(t, tt.calls, calls)
+			calls := calls{}
+			i := &Handler{
+				Scanln: func(a ...any) (int, error) {
+					calls.scanCalls++
+					return tt.i.Scanln(a)
+				},
+				ReadFile:  tt.i.ReadFile,
+				Unmarshal: tt.i.Unmarshal,
+			}
 			if err := i.Checkout(); (err != nil) != tt.wantErr {
 				t.Errorf("Handler.Checkout() error = %v, wantErr %v", err, tt.wantErr)
 			}
+			assert.Equal(t, calls, tt.calls)
 		})
 	}
 }

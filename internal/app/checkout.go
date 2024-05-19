@@ -19,7 +19,12 @@ type SKU struct {
 }
 
 func (i *Handler) Checkout() error {
-	panic("NYI")
+	skuPriceList, _ := i.createPrices()
+	var userInput string
+	fmt.Println("Please input scanned items from the Price list, eg:'BCAABDA' | invalid inputs will be ignored.")
+	i.Scanln(&userInput)
+	fmt.Println(calculateTotal(skuPriceList, userInput))
+	return nil
 }
 
 func (i *Handler) createPrices() ([]SKU, error) {
