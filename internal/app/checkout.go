@@ -1,6 +1,8 @@
 package checkout
 
-import "strings"
+import (
+	"strings"
+)
 
 type Handler struct {
 	ReadFile  func(string) ([]byte, error)
@@ -20,7 +22,10 @@ func (i *Handler) Checkout() error {
 }
 
 func (i *Handler) createPrices() ([]SKU, error) {
-	panic("NYI")
+	skuPriceList := []SKU{}
+	pricesJson, _ := i.ReadFile("../priceList.json")
+	_ = i.Unmarshal(pricesJson, &skuPriceList)
+	return skuPriceList, nil
 }
 
 func calculateTotal(skuPriceList []SKU, itemList string) int {
@@ -28,7 +33,6 @@ func calculateTotal(skuPriceList []SKU, itemList string) int {
 	for _, sku := range skuPriceList {
 		skuQuantity := strings.Count(itemList, sku.Identifier)
 		if sku.SpecialPriceQuantity > 0 {
-
 			totalPrice += (skuQuantity / sku.SpecialPriceQuantity) * sku.SpecialPrice
 			skuQuantity = skuQuantity % sku.SpecialPriceQuantity
 		}
