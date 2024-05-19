@@ -1,6 +1,7 @@
 package checkout
 
 import (
+	"encoding/json"
 	"errors"
 	"reflect"
 	"testing"
@@ -133,6 +134,31 @@ func TestHandler_createPrices(t *testing.T) {
 				unmarshalCalls: 0,
 			},
 			wantErr: true,
+		}, {
+			name: "When given a valid JSON format, the information is unmarshalled correctly",
+			i: &Handler{ReadFile: func(s string) ([]byte, error) {
+				return []byte(`
+				[{
+					"identifier": "A",
+					"unitPrice": 50,
+					"specialPriceQuantity": 3,
+					"specialPrice": 130
+				}]`), nil
+			},
+				Unmarshal: json.Unmarshal,
+			},
+			calls: calls{
+				readFileCalls:  1,
+				unmarshalCalls: 1,
+			},
+			want: []SKU{
+				{Identifier: "A",
+					UnitPrice:            50,
+					SpecialPriceQuantity: 3,
+					SpecialPrice:         130,
+				},
+			},
+			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
