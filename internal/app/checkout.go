@@ -26,7 +26,7 @@ func (i *Handler) Checkout() error {
 	var userInput string
 	fmt.Println("Please input scanned items from the Price list, eg:'BCAABDA' | invalid inputs will be ignored.")
 	i.Scanln(&userInput)
-	fmt.Println(calculateTotal(skuPriceList, userInput))
+	fmt.Println("Total price is: ", calculateTotal(skuPriceList, userInput))
 	return nil
 }
 
