@@ -19,7 +19,10 @@ type SKU struct {
 }
 
 func (i *Handler) Checkout() error {
-	skuPriceList, _ := i.createPrices()
+	skuPriceList, err := i.createPrices()
+	if err != nil {
+		return fmt.Errorf("error occured reading priceList because %w", err)
+	}
 	var userInput string
 	fmt.Println("Please input scanned items from the Price list, eg:'BCAABDA' | invalid inputs will be ignored.")
 	i.Scanln(&userInput)

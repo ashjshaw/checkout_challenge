@@ -233,7 +233,7 @@ func TestHandler_Checkout(t *testing.T) {
 				Unmarshal: func(b []byte, a any) error { return errors.New("expected error in unmarshal") },
 			},
 			calls: calls{
-				scanCalls: 1,
+				scanCalls: 0,
 			},
 			wantErr: true,
 		},
