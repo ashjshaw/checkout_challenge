@@ -3,6 +3,8 @@ package checkout
 import (
 	"reflect"
 	"testing"
+
+	"github.com/go-playground/assert/v2"
 )
 
 func Test_calculateTotal(t *testing.T) {
@@ -87,14 +89,19 @@ func Test_calculateTotal(t *testing.T) {
 }
 
 func TestHandler_createPrices(t *testing.T) {
+	type calls struct {
+		readFileCalls  int
+		unmarshalCalls int
+	}
 	tests := []struct {
 		name    string
 		i       *Handler
+		calls   calls
 		want    []SKU
 		wantErr bool
 	}{
 		{
-			name: "When given a valid priceList.json, no error is returned from the ReadFile function",
+			name: "When given a valid priceList.json, no error is returned from the ReadFile function, or unmarshalFunction",
 			i: &Handler{ReadFile: func(s string) ([]byte, error) {
 				return []byte(`
 				[{
@@ -106,17 +113,33 @@ func TestHandler_createPrices(t *testing.T) {
 			},
 				Unmarshal: func(b []byte, a any) error { return nil },
 			},
-			want:    []SKU{},
+			want: []SKU{},
+			calls: calls{
+				readFileCalls:  1,
+				unmarshalCalls: 1,
+			},
 			wantErr: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := tt.i.createPrices()
+			calls := calls{}
+			i := &Handler{
+				Unmarshal: func(b []byte, a any) error {
+					calls.unmarshalCalls++
+					return tt.i.Unmarshal(b, a)
+				},
+				ReadFile: func(s string) ([]byte, error) {
+					calls.readFileCalls++
+					return tt.i.ReadFile(s)
+				},
+			}
+			got, err := i.createPrices()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Handler.createPrices() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
+			assert.Equal(t, tt.calls, calls)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Handler.createPrices() = %v, want %v", got, tt.want)
 			}
